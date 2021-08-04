@@ -12,13 +12,13 @@ app.use(bodyParser.urlencoded({ limit:"30mb" , extended: true }));
 app.use(cors());
 
 app.use('/reviews' , routes);
-const CONNECTION_URL = process.env.CONNECTION_URL;
+
 const PORT = process.env.PORT;
 
-app.get('/' , (req ,res) => {
-    res.send("connected to API");
+app.get('/' , (req , res) =>  { 
+    res.send("connected");
 });
-mongoose.connect(CONNECTION_URL, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.CONNECTION_URL, {useNewUrlParser: true, useUnifiedTopology: true});
 app.listen(PORT, () => {
     console.log('Server is listening on port 5000');
 });
