@@ -13,13 +13,13 @@ app.use(cors());
 
 app.use('/reviews' , routes);
  
-const PORT = process.env.PORT;
+
 
 app.get('/' , (req , res) =>  { 
     res.send("connected");
 });
 mongoose.connect(process.env.CONNECTION_URL, {useNewUrlParser: true, useUnifiedTopology: true});
-app.listen(PORT, () => {
+app.listen( process.env.PORT, () => {
     console.log('Server is listening on port 5000');
 });
 mongoose.set('useFindAndModify' , false);
