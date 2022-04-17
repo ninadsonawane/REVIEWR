@@ -2,18 +2,19 @@ import mongoose from "mongoose";
 
 const reviewSchema = mongoose.Schema({
   name:String,
+  creator:String, 
   book:String,
   author:String,
   genre:String,
   review:String,
   selectedFile : String,
-  createdAt : {
+  createdAt : { 
     type : Date,
     default : new Date()
   },
-  likeCount : {
-  type : Number,
-  default : 0
+  likes : {
+  type : [String],
+  default : []
   },
 });
 

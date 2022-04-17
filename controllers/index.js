@@ -8,7 +8,7 @@ const router = express.Router();
 export const getReviews = async (req, res) => {
     try {
         const reviewPosts = await ReviewPost.find();
-
+        console.log("322");
         res.status(200).json(reviewPosts);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -16,8 +16,8 @@ export const getReviews = async (req, res) => {
 };
 
 export const createReview = async (req , res) => {
-  const { name , book , author , review , genre , selectedFile } = req.body;
-  const newReview = new ReviewPost({ name , book , author , review , genre , selectedFile });
+  const rv = req.body;
+  const newReview = new ReviewPost({ ...rv , creator: req.userId , createdAt : new Date().toISOString() });
   try {
     await newReview.save();
     res.status(201).json(newReview);
@@ -45,12 +45,20 @@ export const deleteReview = async (req , res) => {
 
 export const likeReview = async (req, res) => {
   const { id } = req.params;
-
+  if(!req.userId) return res.json({ message:'Unauthenticated!'});
+ 
   if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
-  
   const rv = await ReviewPost.findById(id);
+  
+  const index = rv.likes.findIndex((id) => id === String(req.userId));
 
-  const updatedrv = await ReviewPost.findByIdAndUpdate(id, { likeCount: rv.likeCount + 1 }, { new: true });
+  if (index === -1) {
+    rv.likes.push(req.userId);
+  } else {
+    rv.likes = rv.likes.filter((id) => id !== String(req.userId))
+  }
+
+  const updatedrv = await ReviewPost.findByIdAndUpdate(id, rv , { new: true });
   
   res.json(updatedrv);
 }
